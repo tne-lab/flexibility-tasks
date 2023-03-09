@@ -93,9 +93,9 @@ class SetShift(Task):
         if self.pokes[1] == BinaryInput.ENTERED:
             self.nose_poke_lights[1].toggle(False)
             if self.light_sequence[self.cur_trial]:
-                self.nose_poke_lights[0].toggle(True)
-            else:
                 self.nose_poke_lights[2].toggle(True)
+            else:
+                self.nose_poke_lights[0].toggle(True)
             self.change_state(self.States.RESPONSE, {"light_location": self.light_sequence[self.cur_trial]})
 
     def RESPONSE(self):
@@ -115,8 +115,8 @@ class SetShift(Task):
                 metadata["cur_block"] = self.cur_block
                 metadata["rule_index"] = self.cur_rule
                 if self.rule_sequence[self.cur_rule] == 0:
-                    if (self.pokes[0] == BinaryInput.ENTERED and self.light_sequence[self.cur_trial]) or (
-                            self.pokes[2] == BinaryInput.ENTERED and not self.light_sequence[self.cur_trial]):
+                    if (self.pokes[0] == BinaryInput.ENTERED and not self.light_sequence[self.cur_trial]) or (
+                            self.pokes[2] == BinaryInput.ENTERED and self.light_sequence[self.cur_trial]):
                         self.correct()
                         metadata["accuracy"] = "correct"
                     else:
