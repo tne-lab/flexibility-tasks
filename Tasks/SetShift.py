@@ -11,6 +11,7 @@ from Tasks.Task import Task
 
 class SetShift(Task):
     """@DynamicAttrs"""
+
     class States(Enum):
         INITIATION = 0
         RESPONSE = 1
@@ -59,16 +60,20 @@ class SetShift(Task):
     def init_state(self):
         return self.States.INITIATION
 
-    def start(self):
-        self.nose_poke_lights[1].toggle(True)
+    def init(self):
         self.house_light[0].toggle(True)
         self.house_light[1].toggle(True)
+
+    def clear(self):
+        self.house_light[0].toggle(False)
+        self.house_light[1].toggle(False)
+
+    def start(self):
+        self.nose_poke_lights[1].toggle(True)
 
     def stop(self):
         for i in range(3):
             self.nose_poke_lights[i].toggle(False)
-        self.house_light[0].toggle(False)
-        self.house_light[1].toggle(False)
 
     def handle_input(self):
         self.pokes = []
@@ -142,10 +147,14 @@ class SetShift(Task):
             self.nose_poke_lights[0].toggle(False)
             self.nose_poke_lights[2].toggle(False)
             self.change_state(self.States.INTER_TRIAL_INTERVAL, metadata)
-        elif self.time_in_state() > self.response_duration:
+        elif self.time_in_state() > self.response_duration and not (
+                self.cur_trial < self.n_random_start or self.cur_trial >= self.n_random_start + self.correct_to_switch * len(
+                self.rule_sequence)):
             metadata["rule"] = self.rule_sequence[self.cur_rule]
             metadata["cur_block"] = self.cur_block
             metadata["rule_index"] = self.cur_rule
+            self.cur_trial -= self.cur_block
+            self.cur_block = 0
             metadata["accuracy"] = "incorrect"
             metadata["response"] = "none"
             self.nose_poke_lights[0].toggle(False)

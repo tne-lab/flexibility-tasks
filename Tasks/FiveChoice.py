@@ -99,12 +99,16 @@ class FiveChoice(Task):
     def init_state(self):
         return self.States.INITIATION
 
-    def start(self):
+    def init(self):
         self.house_light.toggle(True)
+
+    def clear(self):
+        self.house_light.toggle(False)
+
+    def start(self):
         self.food_light.toggle(True)
 
     def stop(self):
-        self.house_light.toggle(False)
         self.food_light.toggle(False)
         for light in self.nose_poke_lights:
             light.toggle(False)
