@@ -4,6 +4,7 @@ from enum import Enum
 from Components.BinaryInput import BinaryInput
 from Components.Toggle import Toggle
 from Components.TimedToggle import TimedToggle
+from Components.Video import Video
 from Events.InputEvent import InputEvent
 
 from Tasks.Task import Task
@@ -31,7 +32,8 @@ class SetShift(Task):
             'nose_pokes': [BinaryInput, BinaryInput, BinaryInput],
             'nose_poke_lights': [Toggle, Toggle, Toggle],
             'food': [TimedToggle],
-            'house_light': [Toggle, Toggle]
+            'house_light': [Toggle, Toggle],
+            'cam': [Video]
         }
 
     # noinspection PyMethodMayBeStatic
@@ -70,10 +72,12 @@ class SetShift(Task):
 
     def start(self):
         self.nose_poke_lights[1].toggle(True)
+        self.cam.start()
 
     def stop(self):
         for i in range(3):
             self.nose_poke_lights[i].toggle(False)
+        self.cam.stop()
 
     def handle_input(self):
         self.pokes = []
