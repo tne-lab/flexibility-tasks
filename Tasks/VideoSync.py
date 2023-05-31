@@ -15,6 +15,12 @@ class VideoSync(Task):
             'cam': [Video]
         }
 
+    # noinspection PyMethodMayBeStatic
+    def get_constants(self):
+        return {
+            'duration': None
+        }
+
     def init_state(self):
         return self.States.RECORDING
 
@@ -25,4 +31,4 @@ class VideoSync(Task):
         self.cam.stop()
 
     def is_complete(self):
-        return False
+        return self.duration is not None and self.time_in_state() > self.duration * 60
